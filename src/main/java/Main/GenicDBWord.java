@@ -42,6 +42,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -62,6 +63,8 @@ public class GenicDBWord extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("数据库文档生成器");
+        primaryStage.getIcons().add(new Image("数据库.png"));
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);

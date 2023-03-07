@@ -38,6 +38,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 import static javafx.geometry.HPos.RIGHT;
+
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -52,6 +54,7 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.sql.SQLOutput;
@@ -62,12 +65,16 @@ public class GenicDBWord extends Application {
     }
     @Override
     public void start(Stage primaryStage) {
+        String[] DBtypeArrays = {"ORACLE", "MYSQL"};
+        String[] FileTypeArrays = {"WORD", "MD", "HTML"};
         primaryStage.setTitle("数据库文档生成器");
-        primaryStage.getIcons().add(new Image("数据库.png"));
+        String IcoUrl = "数据库.png";
+        primaryStage.getIcons().add(new Image(IcoUrl));
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
+
+        grid.setHgap(1);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
@@ -77,36 +84,44 @@ public class GenicDBWord extends Application {
 
 
 
-        Label userName = new Label("User Name:");
+        Label userName = new Label("用户名:");
         grid.add(userName, 0, 1);
 
         TextField userTextField = new TextField();
         grid.add(userTextField, 1, 1);
 
-        Label pw = new Label("Password:");
+        Label pw = new Label("密码:");
         grid.add(pw, 0, 2);
 
         PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
 
-        Label fileType = new Label("生成文件类型:");
+        Label fileType = new Label("文件类型:");
         grid.add(fileType, 0, 3);
-        ChoiceBox FileType = new ChoiceBox(FXCollections.observableArrayList(
-            "WORD", "MD", "HTML")
-        );
+        ChoiceBox FileType = new ChoiceBox(FXCollections.observableArrayList(FileTypeArrays));
         grid.add(FileType, 1, 3);
 
         Label dburl = new Label("dburl:");
         grid.add(dburl, 0, 4);
 
         TextField dbUrl = new TextField();
+        dbUrl.setPrefWidth(300.0);
         grid.add(dbUrl, 1, 4);
 
         Label dbType = new Label("数据库类型:");
         grid.add(dbType, 0, 5);
-        ChoiceBox DBtype = new ChoiceBox(FXCollections.observableArrayList(
-                "ORACLE", "MYSQL")
+        ChoiceBox DBtype = new ChoiceBox(FXCollections.observableArrayList(DBtypeArrays)
         );
+        DBtype.setOnAction(event -> {
+            String text = String.valueOf(DBtype.getSelectionModel().getSelectedItem());
+            if (StringUtils.isEmpty(dbUrl.getText())) {
+                if (text == DBtypeArrays[0]) {
+                    dbUrl.setText("jdbc:oracle:thin:@localhost:1521:XE");
+                }else if (text == DBtypeArrays[1]) {
+                    dbUrl.setText("jdbc:mysql://localhost:3306");
+                }
+            }
+        });
         grid.add(DBtype, 1, 5);
 
         Button btn = new Button("生成文档");
@@ -171,7 +186,7 @@ public class GenicDBWord extends Application {
             }
         });
 
-        Scene scene = new Scene(grid, 300, 275);
+        Scene scene = new Scene(grid, 320, 285);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
